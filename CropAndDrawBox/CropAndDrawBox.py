@@ -1,0 +1,43 @@
+import cv2
+import os
+
+img_extension = [".jpg",".png"]
+
+def crop_and_draw_box(image_name, x, y, width, height, draw_output_path,crop_output_path):
+    image = None
+    cur_extension = None
+    for extension in img_extension:
+        if image is None:
+            image_path = image_name + extension
+            image = cv2.imread(image_path)
+            cur_extension = extension
+        else:
+            break
+    if image is None:
+        print("File Not Found!!!",image_name)
+        return
+    cropped_image = image[y : y + height, x : x + width]
+    cv2.rectangle(image, (x, y), (x + width, y + height), (0, 0, 255), 2)
+    cv2.imwrite(draw_output_path + cur_extension, image)
+    cv2.imwrite(crop_output_path + cur_extension, cropped_image)
+
+
+def append_suffix_to_filename(filename, suffix):
+    name, extension = os.path.splitext(filename)
+    new_filename = name + suffix + extension
+    return new_filename
+
+if __name__ == "__main__":
+    dirpath = "D:\dataset\Prealrain"
+    imgDirs = ["derain", "deraindetect", "rain", "raindetect"]
+    # set image Name
+    imgName = "241"
+    x = 30
+    y = 140
+    width = 200
+    height = width
+    for imgDir in imgDirs:
+        path = os.path.join(dirpath, imgDir, imgName)
+        draw_output_path = os.path.join(dirpath, imgDir, append_suffix_to_filename(imgName,"_draw"))
+        crop_output_path = os.path.join(dirpath, imgDir, append_suffix_to_filename(imgName,"_crop"))
+        crop_and_draw_box(path, x, y, width, height, draw_output_path,crop_output_path)
