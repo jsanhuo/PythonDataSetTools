@@ -1,5 +1,6 @@
 import cv2
 import os
+from Utils import append_suffix_to_filename
 
 img_extension = [".jpg",".png"]
 
@@ -22,10 +23,7 @@ def crop_and_draw_box(image_name, x, y, width, height, draw_output_path,crop_out
     cv2.imwrite(crop_output_path + cur_extension, cropped_image)
 
 
-def append_suffix_to_filename(filename, suffix):
-    name, extension = os.path.splitext(filename)
-    new_filename = name + suffix + extension
-    return new_filename
+
 
 if __name__ == "__main__":
     dirpath = "D:\dataset\Prealrain"
