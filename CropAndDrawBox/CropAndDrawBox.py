@@ -31,8 +31,6 @@ def crop_and_draw_box(image_name, x, y, width, height, draw_output_path, crop_ou
     cv2.imwrite(crop_output_path + cur_extension, cropped_image)
 
 
-
-
 if __name__ == "__main__":
     dirpath = "D:\dataset\Prealrain"
     imgDirs = ["derain", "deraindetect", "rain", "raindetect"]
