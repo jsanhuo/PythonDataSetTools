@@ -1,6 +1,23 @@
 import cv2
 import os
+import random
 
+def getRect(pt1,pt2):
+    x = min(pt1[0], pt2[0])
+    y = min(pt1[1], pt2[1])
+    width = abs(pt1[0] - pt2[0])
+    height = abs(pt1[1] - pt2[1])
+    return x, y, width, height
+
+def apply_mosaic(image, x, y, width, height, block_size=5):
+    roi = image[y:y+height, x:x+width]
+    small_roi = cv2.resize(roi, (block_size, block_size), interpolation=cv2.INTER_LINEAR)
+    flat_roi = small_roi.reshape(-1, 3)
+    random.shuffle(flat_roi)
+    shuffled_roi = flat_roi.reshape(small_roi.shape)
+    mosaic_roi = cv2.resize(shuffled_roi, (width, height), interpolation=cv2.INTER_NEAREST)
+    image[y:y+height, x:x+width] = mosaic_roi
+    return image
 
 def adjust_rectangle_aspect_ratio(x1, y1, x2, y2, target_aspect_ratio):
     width = abs(x2 - x1)

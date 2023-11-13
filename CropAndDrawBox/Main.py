@@ -5,9 +5,11 @@ from CropAndDrawBox import *
 refPt = []
 cropping = False
 aspectRatio = 1
-
+mosaicPt = []
+mosaic_selected = False
+image = None
 def click_and_crop(event, x, y, flags, param):
-    global refPt, cropping
+    global refPt, cropping, mosaicPt,image
 
     if event == cv2.EVENT_LBUTTONDOWN:
         refPt = [(x, y)]
@@ -23,8 +25,16 @@ def click_and_crop(event, x, y, flags, param):
         cv2.rectangle(image, refPt[0], refPt[1], (0, 255, 0), 2)
         cv2.imshow("image", image)
     elif event == cv2.EVENT_RBUTTONDOWN:
+        mosaicPt.append((x, y))
+        mosaic_selected = True
         pass
     elif event == cv2.EVENT_RBUTTONUP:
+        mosaicPt.append((x, y))
+        mosaic_selected = False
+        count = len(mosaicPt)
+        x,y,width,height = getRect(mosaicPt[count-2],mosaicPt[count-1])
+        image = apply_mosaic(image, x, y, width, height)
+        cv2.imshow("image", image)
         pass
 
 if __name__ == "__main__":
@@ -47,15 +57,12 @@ if __name__ == "__main__":
             image = clone.copy()
         # 按 "c" 键完成选择
         elif key == ord("c"):
-            x = min(refPt[0][0], refPt[1][0])
-            y = min(refPt[0][1], refPt[1][1])
-            width = abs(refPt[0][0] - refPt[1][0])
-            height = abs(refPt[0][1] - refPt[1][1])
+            x,y,width,height = getRect(refPt[0],refPt[1])
             for imgDir in imgDirs:
                 path = os.path.join(dirpath, imgDir, imgName)
                 draw_output_path = os.path.join(dirpath, imgDir, append_suffix_to_filename(imgName,"_draw"))
                 crop_output_path = os.path.join(dirpath, imgDir, append_suffix_to_filename(imgName,"_crop"))
-                crop_and_draw_box(path, x, y, width, height, draw_output_path,crop_output_path)
+                crop_and_draw_box(path, x, y, width, height, draw_output_path,crop_output_path,mosaicPt)
             break
     cv2.destroyAllWindows()
     
