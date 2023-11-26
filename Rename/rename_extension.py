@@ -10,7 +10,7 @@ def rename_files(directory, new_extension):
                 os.rename(src, dst)
                 print(f"Renamed file: {filename} -> {new_filename}")
 
-directory = '/path/to/directory/'
+directory = r'D:\dataset\mixdatave-up\test_mixderain_696'
 new_extension = '.jpg'
 
 rename_files(directory, new_extension)
