@@ -40,14 +40,13 @@ for label in labels:
             threshold_distance = 5
             old_points = new_points.copy()
             polygon = Polygon(old_points)
-            py = 2
+            py = 1
             polygon_points = list(polygon.exterior.coords)
             new_points = []
             for i in range(len(polygon_points) - 1):
                 p1 = Point(polygon_points[i])
                 p2 = Point(polygon_points[i + 1])
                 distance = p1.distance(p2)
-                
                 # 如果距离超过阈值,则在两点之间插入新点
                 if distance > threshold_distance:
                     flag = True
@@ -56,7 +55,7 @@ for label in labels:
                     new_x = (x1 + x2) / 2 + random.uniform(-py, py)
                     new_y = (y1 + y2) / 2 + random.uniform(-py, py)
                     new_point = Point(new_x, new_y)
-                    while polygon.contains(new_point):
+                    if not polygon.contains(new_point):
                         new_x = (x1 + x2) / 2 + random.uniform(-py, py)
                         new_y = (y1 + y2) / 2 + random.uniform(-py, py)
                         new_point = Point(new_x, new_y)
