@@ -64,6 +64,7 @@ for label in labels:
             if oilPolygon.contains(gasCenter):
                 pre_data.append((gasPolygon, oilPolygon))
                 break
+    shake = 5
     for gasPolygon, oilPolygon in pre_data:
         # 获取gas的所有点
         gasPoints = list(gasPolygon.exterior.coords)
@@ -75,10 +76,28 @@ for label in labels:
             or_p = Point(gasPoints[i])
             # 如果p在oil内部，将其移动到oil的外部
             while oilPolygon.contains(p):
-                gasPoints[i] = (p.x + random.uniform(-5, 5), p.y + random.uniform(-5, 5))
+                gasPoints[i] = (p.x + random.uniform(-shake, shake), p.y + random.uniform(-shake, shake))
                 p = Point(gasPoints[i])
                 if(gasPolygon.contains(p)):
                     p = Point(or_p)
+        
+        gasPolygon = Polygon(gasPoints)
+        
+        # 遍历oil的所有点
+        for i in range(len(oilPoints)):
+            p = Point(oilPoints[i])
+            or_p = Point(oilPoints[i])
+            # 如果p在gas外，将其移动到gas的内部
+            shake_count = 0
+            while not gasPolygon.contains(p):
+                shake_count += 1
+                oilPoints[i] = (p.x + random.uniform(-shake, shake), p.y + random.uniform(-shake, shake))
+                p = Point(oilPoints[i])
+                if not oilPolygon.contains(p):
+                    p = Point(or_p)
+                if shake_count > 100:
+                    p = Point(or_p)
+                    break
             
         with open(os.path.join(save_path, label), 'a') as f:
             f.write(str(0) + ' ')
