@@ -7,6 +7,14 @@ imgs_path = r'E:\704data\testhebing\alloil41json'
 txt_path = r'E:\704data\testhebing\gasliqout'
 save_path = r'E:\704data\testhebing\zd'
 
+# 清空save_path
+if os.path.exists(save_path):
+    for file in os.listdir(save_path):
+        os.remove(os.path.join(save_path, file))
+else:
+    os.makedirs(save_path)
+
+
 labels = os.listdir(txt_path)
 count = 0
 for label in labels:
@@ -64,12 +72,13 @@ for label in labels:
         # 遍历gas的所有点
         for i in range(len(gasPoints)):
             p = Point(gasPoints[i])
+            or_p = Point(gasPoints[i])
             # 如果p在oil内部，将其移动到oil的外部
-            flag = False
             while oilPolygon.contains(p):
-                flag = True
-                gasPoints[i] = (p.x + random.uniform(-2, 2), p.y + random.uniform(-2, 2))
+                gasPoints[i] = (p.x + random.uniform(-5, 5), p.y + random.uniform(-5, 5))
                 p = Point(gasPoints[i])
+                if(gasPolygon.contains(p)):
+                    p = Point(or_p)
             
         with open(os.path.join(save_path, label), 'a') as f:
             f.write(str(0) + ' ')
